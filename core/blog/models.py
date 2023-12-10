@@ -1,6 +1,9 @@
 from django.db import models
-
+from django.contrib.auth import get_user_model
 # Create your models here.
+
+# getting user model object
+User = get_user_model()
 class Post(models.Model):
     '''
     this is a class for define posts for blog app
@@ -10,7 +13,7 @@ class Post(models.Model):
     title = models.CharField(max_length=200)
     content = models.TextField()
     status = models.BooleanField()
-    category = models.ForeignKey('Category', on_delete=models.SET_NULL)
+    category = models.ForeignKey('Category', on_delete=models.SET_NULL, null=True)
     
     created_date = models.DateTimeField(auto_now_add=True)
     updated_date = models.DateTimeField(auto_now=True)
