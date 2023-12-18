@@ -6,31 +6,41 @@ from blog.serializers import PostSerializer
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from django.shortcuts import get_object_or_404
+from rest_framework.generics import ListCreateAPIView
 
-# Create your views here.
-class PostList(APIView):
-    permission_classes= [IsAuthenticatedOrReadOnly]
-    serializer_class = PostSerializer
+# # Create your views here.
+# class PostList(APIView):
+#     permission_classes= [IsAuthenticatedOrReadOnly]
+#     serializer_class = PostSerializer
+#     '''
+#     getting a list of posts and creating a new post
+#     '''
+#     def get(self,request):
+#         '''
+#         retrieve a list of posts
+#         '''
+#         posts = Post.objects.filter(status=True)
+#         serializer = PostSerializer(posts, many=True)
+#         return Response(serializer.data)
+    
+#     def post(self, request):
+#         '''
+#         create a new post
+#         '''
+#         serializer = PostSerializer(data=request.data)
+#         if serializer.is_valid():
+#             serializer.save()
+#             return Response(serializer.data, status=status.HTTP_201_CREATED)
+#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+class PostList(ListCreateAPIView):
     '''
     getting a list of posts and creating a new post
     '''
-    def get(self,request):
-        '''
-        retrieve a list of posts
-        '''
-        posts = Post.objects.filter(status=True)
-        serializer = PostSerializer(posts, many=True)
-        return Response(serializer.data)
+    permission_classes= [IsAuthenticatedOrReadOnly]
+    queryset = Post.objects.filter(status=True)
+    serializer_class = PostSerializer
     
-    def post(self, request):
-        '''
-        create a new post
-        '''
-        serializer = PostSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 class PostDetail(APIView):
     '''
