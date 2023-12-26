@@ -8,24 +8,30 @@ from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from django.shortcuts import get_object_or_404
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework.viewsets import ModelViewSet
-
-
+from .permissions import IsOwnerOrReadOnly
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.filters import SearchFilter, OrderingFilter
+from .paginations import DefaultPagination
 
 
 '''
 creating views using ModelViewSet
 '''
 class PostModelViewSet(ModelViewSet):
-    permission_classes= [IsAuthenticatedOrReadOnly]
+    permission_classes= [IsAuthenticatedOrReadOnly,IsOwnerOrReadOnly]
+    pagination_class = DefaultPagination
     queryset = Post.objects.filter(status=True)
     serializer_class = PostSerializer
+    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
+    filterset_fields = ['category']
+    search_fields = ['title','content']
+    ordering_fields = ['published_date']
     
 class CategoryModelViewSet(ModelViewSet):
     permission_classes= [IsAuthenticatedOrReadOnly]
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
-    
-
+ 
 
 '''
 creating views using concrete views (generic views + mixins)
